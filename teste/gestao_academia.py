@@ -496,7 +496,7 @@ def menu_gerenciar(tabela, nome_tabela):
             if tabela == 'alunos': listar_todos('alunos', f"{'Cód':<5} | {'Nome':<20} | {'Cidade'}")
             elif tabela == 'professores': listar_todos('professores', f"{'Cód':<5} | {'Nome':<20} | {'Cidade'}")
             elif tabela == 'modalidades': listar_todos('modalidades', f"{'Cód':<5} | {'Descrição':<20} | {'Professor':<20} | {'Valor':<10} | {'Vagas'}")
-            else: listar_todos(tabela, ' | '.join(dados[tabela].values().__iter__().__next__()) if dados[tabela] else "Sem colunas")
+            else: listar_todos(tabela, ' | '.join(map(str, dados[tabela].values().__iter__().__next__())) if dados[tabela] else "Sem colunas")
         elif opcao == '5':
             break
         else:
