@@ -1,4 +1,5 @@
 # gestao_academia.py
+#gi otario
 
 import os
 from datetime import datetime
@@ -85,6 +86,7 @@ def incluir_cidade():
         cod = int(input("Código da Cidade: "))
         if indices["cidades"].buscar(cod):
             print("\nERRO: Código de cidade já existe!")
+            input()
             return
         
         desc = input("Descrição (Nome da Cidade): ")
@@ -94,6 +96,7 @@ def incluir_cidade():
         indices["cidades"].inserir(cod)
         salvar_dados("cidades")
         print("\nCidade incluída com sucesso!")
+        input()
     except ValueError:
         print("\nERRO: Código deve ser um número inteiro.")
 
@@ -102,16 +105,20 @@ def consultar(tabela, nome_tabela):
         cod = int(input(f"Código do(a) {nome_tabela} a consultar: "))
         if not indices[tabela].buscar(cod):
             print(f"\nERRO: {nome_tabela.capitalize()} com código {cod} não encontrado(a).")
+            input()
             return None
-        return dados[tabela][cod]
+        print( dados[tabela][cod])
+        input()
     except ValueError:
         print("\nERRO: Código deve ser um número inteiro.")
+        input()
         return None
-
+    
 def listar_todos(tabela, cabecalho):
     print(f"\n--- Listagem de {tabela.capitalize()} ---")
     if not dados[tabela]:
         print("Nenhum registro encontrado.")
+        input()
         return
         
     print(cabecalho)
@@ -135,6 +142,7 @@ def listar_todos(tabela, cabecalho):
         else:
             print(" | ".join(map(str, registro)))
     print("-" * 50)
+    input()
 
 def excluir(tabela, nome_tabela):
     try:
@@ -148,6 +156,7 @@ def excluir(tabela, nome_tabela):
             if any(int(aluno[2]) == cod for aluno in dados['alunos'].values()) or \
                any(int(prof[4]) == cod for prof in dados['professores'].values()):
                 print("\nERRO: Não é possível excluir esta cidade, pois ela está associada a alunos ou professores.")
+                input()
                 return
         # Adicionar mais validações para outras tabelas se necessário
 
@@ -155,6 +164,7 @@ def excluir(tabela, nome_tabela):
         indices[tabela].remover(cod)
         salvar_dados(tabela)
         print(f"\n{nome_tabela.capitalize()} com código {cod} excluído(a) com sucesso.")
+        input()
 
     except ValueError:
         print("\nERRO: Código deve ser um número inteiro.")
@@ -474,7 +484,7 @@ def menu_gerenciar(tabela, nome_tabela):
             elif tabela == 'modalidades': incluir_modalidade()
             elif tabela == 'matriculas': incluir_matricula()
         elif opcao == '2':
-            if tabela == 'cidades': print(consultar('cidades', 'cidade'))
+            if tabela == 'cidades': consultar('cidades', 'cidade')
             elif tabela == 'alunos': consultar_aluno()
             elif tabela == 'professores': consultar_professor()
             elif tabela == 'modalidades': consultar_modalidade()
