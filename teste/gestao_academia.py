@@ -107,7 +107,7 @@ def consultar(tabela, nome_tabela):
             print(f"\nERRO: {nome_tabela.capitalize()} com código {cod} não encontrado(a).")
             input()
             return None
-        print( dados[tabela][cod])
+        print( "xerequita")
         input()
     except ValueError:
         print("\nERRO: Código deve ser um número inteiro.")
@@ -139,6 +139,10 @@ def listar_todos(tabela, cabecalho):
             cod_prof = int(registro[2])
             prof_info = dados["professores"].get(cod_prof, ["", "N/A"])
             print(f"{registro[0]:<5} | {registro[1]:<20} | {prof_info[1]:<20} | R${float(registro[3]):.2f} | {registro[5]}/{registro[4]}")
+        elif tabela == 'cidades':
+            print(f"{registro[0]:<5} | {registro[1]:<20} | {registro[2]}")
+        elif tabela == 'matriculas':
+            print(f"{registro[0]:<5} | {registro[1]:<20} | {registro[2]:<20} | {registro[3]}")
         else:
             print(" | ".join(map(str, registro)))
     print("-" * 50)
@@ -496,8 +500,10 @@ def menu_gerenciar(tabela, nome_tabela):
             if tabela == 'alunos': listar_todos('alunos', f"{'Cód':<5} | {'Nome':<20} | {'Cidade'}")
             elif tabela == 'professores': listar_todos('professores', f"{'Cód':<5} | {'Nome':<20} | {'Cidade'}")
             elif tabela == 'modalidades': listar_todos('modalidades', f"{'Cód':<5} | {'Descrição':<20} | {'Professor':<20} | {'Valor':<10} | {'Vagas'}")
-            else: listar_todos(tabela, ' | '.join(map(str, dados[tabela].values().__iter__().__next__())) if dados[tabela] else "Sem colunas")
+            elif tabela == 'cidades':listar_todos('cidades', f"{'Código':<5} | {'Descrição':<20} | {'UF'}")
+            elif tabela == 'matriculas': listar_todos('matriculas', f"{'Cód':<5} | {'Cód Aluno':<20} | {'Cód Modalidade':<20} | {'Qtde Aulas'}")
         elif opcao == '5':
+            
             break
         else:
             print("\nOpção inválida. Tente novamente.")
