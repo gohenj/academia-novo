@@ -107,8 +107,7 @@ def consultar(tabela, nome_tabela):
             print(f"\nERRO: {nome_tabela.capitalize()} com código {cod} não encontrado(a).")
             input()
             return None
-        print( "xerequita")
-        input()
+        return dados[tabela][cod]
     except ValueError:
         print("\nERRO: Código deve ser um número inteiro.")
         input()
@@ -468,7 +467,7 @@ def relatorio_matriculas_ordenado():
     print(f"Quantidade Total de Alunos Matriculados: {total_alunos_matriculados}")
     print(f"Valor Total Geral a ser Pago: R$ {valor_total_geral:.2f}")
     print("-" * 105)
-
+    input()
 # --- MENUS DE INTERFACE ---
 
 def menu_gerenciar(tabela, nome_tabela):
@@ -488,7 +487,7 @@ def menu_gerenciar(tabela, nome_tabela):
             elif tabela == 'modalidades': incluir_modalidade()
             elif tabela == 'matriculas': incluir_matricula()
         elif opcao == '2':
-            if tabela == 'cidades': consultar('cidades', 'cidade')
+            if tabela == 'cidades': print(consultar('cidades', 'cidade'))
             elif tabela == 'alunos': consultar_aluno()
             elif tabela == 'professores': consultar_professor()
             elif tabela == 'modalidades': consultar_modalidade()
