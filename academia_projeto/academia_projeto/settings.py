@@ -20,12 +20,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-wxow-ad!+3wb0f#)6uo61@c*@g%b+0^ks6o100tn+q$hc6(o0z'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-wxow-ad!+3wb0f#)6uo61@c*@g%b+0^ks6o100tn+q$hc6(o0z')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = os.environ.get('DEBUG', 'False').lower() == 'true'
 
-ALLOWED_HOSTS = ['zaguinho.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = []
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 
 # Application definition
@@ -79,7 +82,7 @@ import dj_database_url
 
 DATABASES = {
     'default': dj_database_url.config(
-        # O Render vai nos dar a URL do banco de dados, esta linha a lê automaticamente
+        # Lê a variável de ambiente DATABASE_URL do Render/Neon
         default=os.environ.get('DATABASE_URL'),
         conn_max_age=600
     )

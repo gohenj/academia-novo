@@ -1,0 +1,16 @@
+# Banco de dados local
+db.sqlite3
+db.sqlite3-journal
+
+# Arquivos temporários do Python
+__pycache__/
+*.pyc
+
+# Arquivos de ambiente (boas práticas)
+.env
+
+# Pasta de arquivos estáticos coletados
+staticfiles/
+
+# Arquivos do VSCode
+.vscode/
