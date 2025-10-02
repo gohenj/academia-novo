@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Relatório de Faturamento por Modalidade</h2>
+    <p>Este relatório calcula o faturamento total para cada modalidade com base nas matrículas ativas.</p>
+    
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Cód. Modalidade</th>
+                <th>Descrição</th>
+                <th>Professor Responsável</th>
+                <th>Valor Total Faturado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cod, info in faturamento.items() %}
+            <tr>
+                <td>{{ cod }}</td>
+                <td>{{ info.descricao }}</td>
+                <td>{{ info.professor_nome }}</td>
+                <td class="fw-bold">R$ {{ info.valor_faturado }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">Nenhum dado de faturamento para exibir.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

@@ -1,0 +1,41 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <h2>Relatório Geral de Matrículas</h2>
+    <p>Ordenado por Código da Matrícula.</p>
+    
+    <table class="table table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Cód. Matrícula</th>
+                <th>Nome do Aluno</th>
+                <th>Cidade do Aluno</th>
+                <th>Modalidade</th>
+                <th>Professor</th>
+                <th>Valor a Pagar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mat in matriculas %}
+            <tr>
+                <td>{{ mat.cod_matricula }}</td>
+                <td>{{ mat.aluno_nome }}</td>
+                <td>{{ mat.cidade_aluno }}</td>
+                <td>{{ mat.modalidade_desc }}</td>
+                <td>{{ mat.professor_nome }}</td>
+                <td>R$ {{ mat.valor_a_pagar }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="6" class="text-center">Nenhuma matrícula encontrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot class="table-group-divider">
+            <tr class="fw-bold">
+                <td colspan="4">Total de Alunos Matriculados: {{ total_matriculas }}</td>
+                <td colspan="2" class="text-end">Valor Total Geral: R$ {{ valor_total_geral }}</td>
+            </tr>
+        </tfoot>
+    </table>
+{% endblock %}
