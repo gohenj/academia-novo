@@ -6,27 +6,47 @@
     <div class="card mb-4">
         <div class="card-header">Adicionar Nova Cidade</div>
         <div class="card-body">
-            <form action="{{ url_for('cidades') }}" method="POST">
-                <div class="row g-3">
+            <!-- novalidate impede a validação HTML padrão, para usarmos a nossa do Flask -->
+            <form action="{{ url_for('cidades') }}" method="POST" novalidate>
+                <!-- hidden_tag() é ESSENCIAL para a segurança do formulário (CSRF) -->
+                {{ form.hidden_tag() }}
+                <div class="row g-3 align-items-end">
                     <div class="col-md-2">
-                        <input type="number" class="form-control" name="cod" placeholder="Código" required>
+                        <!-- Renderiza o label (rótulo) do campo -->
+                        {{ form.cod.label(class="form-label") }}
+                        <!-- Renderiza o campo de input, já com as classes do Bootstrap -->
+                        {{ form.cod(class="form-control", placeholder="Código") }}
+                        <!-- Este loop mostra os erros de validação APENAS para este campo -->
+                        {% for error in form.cod.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="col-md-6">
-                        <input type="text" class="form-control" name="desc" placeholder="Descrição (Nome)" required>
+                        {{ form.desc.label(class="form-label") }}
+                        {{ form.desc(class="form-control", placeholder="Descrição (Nome)") }}
+                        {% for error in form.desc.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="col-md-2">
-                        <input type="text" class="form-control" name="uf" placeholder="UF" maxlength="2" required>
+                        {{ form.uf.label(class="form-label") }}
+                        {{ form.uf(class="form-control", placeholder="UF") }}
+                        {% for error in form.uf.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="col-md-2">
-                        <button type="submit" class="btn btn-primary w-100">Salvar</button>
+                        <!-- Renderiza o botão de submit -->
+                        {{ form.submit(class="btn btn-primary w-100") }}
                     </div>
                 </div>
             </form>
         </div>
     </div>
 
+    <!-- A tabela de exibição não muda, continua a mesma -->
     <table class="table table-striped table-hover">
-        <thead>
+        <thead class="table-dark">
             <tr>
                 <th>Código</th>
                 <th>Descrição</th>
@@ -39,7 +59,7 @@
             <tr>
                 <td>{{ cidade[0] }}</td>
                 <td>{{ cidade[1] }}</td>
-                <td>{{ cidade[2] }}</td>
+                <td>{{ cidade[2] | upper }}</td>
                 <td>
                     <a href="{{ url_for('excluir_cidade', cod=cidade[0]) }}" class="btn btn-danger btn-sm"
                        onclick="return confirm('Tem certeza que deseja excluir?');">Excluir</a>
@@ -53,3 +73,4 @@
         </tbody>
     </table>
 {% endblock %}
+
