@@ -6,38 +6,43 @@
     <div class="card mb-4">
         <div class="card-header">Realizar Nova Matrícula</div>
         <div class="card-body">
-            <form action="{{ url_for('matriculas') }}" method="POST">
+            <form action="{{ url_for('matriculas') }}" method="POST" novalidate>
+                {{ form.hidden_tag() }}
+
                 <div class="row g-3">
                     <div class="col-md-2">
-                        <label class="form-label">Cód. Matrícula</label>
-                        <input type="number" class="form-control" name="cod_matricula" placeholder="Código" required>
+                        {{ form.cod_matricula.label(class="form-label") }}
+                        {{ form.cod_matricula(class="form-control", placeholder="Código") }}
+                        {% for error in form.cod_matricula.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label">Aluno</label>
-                        <select name="cod_aluno" class="form-select" required>
-                            <option value="">Selecione o Aluno...</option>
-                            {% for aluno in alunos %}
-                            <option value="{{ aluno.cod_aluno }}">{{ aluno.nome }}</option>
-                            {% endfor %}
-                        </select>
+                        {{ form.cod_aluno.label(class="form-label") }}
+                        {{ form.cod_aluno(class="form-select") }}
+                        {% for error in form.cod_aluno.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="col-md-5">
-                        <label class="form-label">Modalidade</label>
-                        <select name="cod_modalidade" class="form-select" required>
-                            <option value="">Selecione a Modalidade...</option>
-                            {% for modalidade in modalidades %}
-                            <option value="{{ modalidade.cod_modalidade }}">{{ modalidade.descricao }}</option>
-                            {% endfor %}
-                        </select>
+                        {{ form.cod_modalidade.label(class="form-label") }}
+                        {{ form.cod_modalidade(class="form-select") }}
+                        {% for error in form.cod_modalidade.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
                     </div>
                 </div>
+
                 <div class="row g-3 mt-2">
                      <div class="col-md-4">
-                        <label class="form-label">Quantidade de Aulas</label>
-                        <input type="number" class="form-control" name="qtde_aulas" placeholder="Ex: 8" required>
+                        {{ form.qtde_aulas.label(class="form-label") }}
+                        {{ form.qtde_aulas(class="form-control", placeholder="Ex: 8") }}
+                        {% for error in form.qtde_aulas.errors %}
+                            <div class="text-danger small mt-1">{{ error }}</div>
+                        {% endfor %}
                     </div>
                     <div class="col-md-8 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">Realizar Matrícula</button>
+                        {{ form.submit(class="btn btn-primary w-100") }}
                     </div>
                 </div>
             </form>
@@ -45,7 +50,7 @@
     </div>
 
     <table class="table table-striped table-hover">
-        <thead>
+        <thead class="table-dark">
             <tr>
                 <th>Cód. Matrícula</th>
                 <th>Aluno</th>
@@ -76,3 +81,4 @@
         </tbody>
     </table>
 {% endblock %}
+

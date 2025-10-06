@@ -1,17 +1,14 @@
-# app.py
-# Servidor Web Flask
-
 from flask import Flask, render_template, request, redirect, url_for, flash
-import gestao_academia_lib as lib  # Importa nossa biblioteca
+import gestao_academia_lib as lib
+# Importamos TODAS as nossas classes de formulário do arquivo forms.py
+from forms import CidadeForm, AlunoForm, ProfessorForm, ModalidadeForm, MatriculaForm
 
 app = Flask(__name__)
-# Chave secreta para mensagens flash (necessária para exibir erros/sucesso)
 app.config['SECRET_KEY'] = 'sua-chave-secreta-aqui-12345'
 
-# Carrega os dados dos arquivos UMA VEZ ao iniciar o servidor
+# Carrega os dados na memória ao iniciar
 lib.carregar_dados()
 
-# --- Rota Principal ---
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -19,21 +16,18 @@ def index():
 # --- Rotas de Cidades ---
 @app.route('/cidades', methods=['GET', 'POST'])
 def cidades():
-    if request.method == 'POST':
-        # Recebe dados do formulário
-        cod = int(request.form['cod'])
-        desc = request.form['desc']
-        uf = request.form['uf']
-        
-        # Tenta incluir no backend
-        sucesso, msg = lib.incluir_cidade(cod, desc, uf)
-        flash(msg, 'success' if sucesso else 'danger') # Exibe mensagem
-        
+    form = CidadeForm()
+    # Este 'if' só será verdadeiro se o formulário for enviado (POST) E passar em todas as regras
+    if form.validate_on_submit():
+        # Pegamos os dados validados e limpos do formulário
+        sucesso, msg = lib.incluir_cidade(form.cod.data, form.desc.data, form.uf.data)
+        flash(msg, 'success' if sucesso else 'danger')
         return redirect(url_for('cidades'))
-
-    # Se for GET, apenas lista
+    
+    # Se for GET ou se a validação falhar, a página é renderizada normalmente
     lista_cidades = lib.get_todas_cidades()
-    return render_template('cidades.html', cidades=lista_cidades)
+    # Passamos o objeto 'form' para o template para que ele possa ser desenhado
+    return render_template('cidades.html', cidades=lista_cidades, form=form)
 
 @app.route('/cidades/excluir/<int:cod>')
 def excluir_cidade(cod):
@@ -44,21 +38,20 @@ def excluir_cidade(cod):
 # --- Rotas de Alunos ---
 @app.route('/alunos', methods=['GET', 'POST'])
 def alunos():
-    if request.method == 'POST':
-        cod = int(request.form['cod_aluno'])
-        nome = request.form['nome']
-        cod_cidade = int(request.form['cod_cidade'])
-        data_nasc = request.form['data_nasc']
-        peso = float(request.form['peso'])
-        altura = float(request.form['altura'])
-        
-        sucesso, msg = lib.incluir_aluno(cod, nome, cod_cidade, data_nasc, peso, altura)
+    form = AlunoForm()
+    # Populamos as opções do campo <select> de cidades dinamicamente
+    form.cod_cidade.choices = [(c[0], f"{c[1]} - {c[2]}") for c in lib.get_todas_cidades()]
+    
+    if form.validate_on_submit():
+        sucesso, msg = lib.incluir_aluno(
+            form.cod_aluno.data, form.nome.data, form.cod_cidade.data,
+            form.data_nasc.data, form.peso.data, form.altura.data
+        )
         flash(msg, 'success' if sucesso else 'danger')
         return redirect(url_for('alunos'))
 
     lista_alunos = lib.get_todos_alunos_detalhado()
-    lista_cidades = lib.get_todas_cidades() # Para o dropdown
-    return render_template('alunos.html', alunos=lista_alunos, cidades=lista_cidades)
+    return render_template('alunos.html', alunos=lista_alunos, form=form)
 
 @app.route('/alunos/excluir/<int:cod>')
 def excluir_aluno(cod):
@@ -69,20 +62,20 @@ def excluir_aluno(cod):
 # --- Rotas de Professores ---
 @app.route('/professores', methods=['GET', 'POST'])
 def professores():
-    if request.method == 'POST':
-        cod = int(request.form['cod_professor'])
-        nome = request.form['nome']
-        endereco = request.form['endereco']
-        telefone = request.form['telefone']
-        cod_cidade = int(request.form['cod_cidade'])
+    form = ProfessorForm()
+    # Populamos as opções do campo <select> de cidades
+    form.cod_cidade.choices = [(c[0], f"{c[1]} - {c[2]}") for c in lib.get_todas_cidades()]
 
-        sucesso, msg = lib.incluir_professor(cod, nome, endereco, telefone, cod_cidade)
+    if form.validate_on_submit():
+        sucesso, msg = lib.incluir_professor(
+            form.cod_professor.data, form.nome.data, form.endereco.data,
+            form.telefone.data, form.cod_cidade.data
+        )
         flash(msg, 'success' if sucesso else 'danger')
         return redirect(url_for('professores'))
 
     lista_professores = lib.get_todos_professores_detalhado()
-    lista_cidades = lib.get_todas_cidades() # Para o dropdown
-    return render_template('professores.html', professores=lista_professores, cidades=lista_cidades)
+    return render_template('professores.html', professores=lista_professores, form=form)
 
 @app.route('/professores/excluir/<int:cod>')
 def excluir_professor(cod):
@@ -93,20 +86,20 @@ def excluir_professor(cod):
 # --- Rotas de Modalidades ---
 @app.route('/modalidades', methods=['GET', 'POST'])
 def modalidades():
-    if request.method == 'POST':
-        cod = int(request.form['cod_modalidade'])
-        desc = request.form['descricao']
-        cod_prof = int(request.form['cod_professor'])
-        valor = float(request.form['valor_aula'])
-        limite = int(request.form['limite_alunos'])
+    form = ModalidadeForm()
+    # Populamos as opções do campo <select> de professores
+    form.cod_professor.choices = [(p['cod_professor'], p['nome']) for p in lib.get_todos_professores_detalhado()]
 
-        sucesso, msg = lib.incluir_modalidade(cod, desc, cod_prof, valor, limite)
+    if form.validate_on_submit():
+        sucesso, msg = lib.incluir_modalidade(
+            form.cod_modalidade.data, form.descricao.data, form.cod_professor.data,
+            form.valor_aula.data, form.limite_alunos.data
+        )
         flash(msg, 'success' if sucesso else 'danger')
         return redirect(url_for('modalidades'))
 
     lista_modalidades = lib.get_todas_modalidades_detalhado()
-    lista_professores = lib.get_todos_professores_detalhado() # Para o dropdown
-    return render_template('modalidades.html', modalidades=lista_modalidades, professores=lista_professores)
+    return render_template('modalidades.html', modalidades=lista_modalidades, form=form)
 
 @app.route('/modalidades/excluir/<int:cod>')
 def excluir_modalidade(cod):
@@ -117,20 +110,21 @@ def excluir_modalidade(cod):
 # --- Rotas de Matrículas ---
 @app.route('/matriculas', methods=['GET', 'POST'])
 def matriculas():
-    if request.method == 'POST':
-        cod = int(request.form['cod_matricula'])
-        cod_aluno = int(request.form['cod_aluno'])
-        cod_modalidade = int(request.form['cod_modalidade'])
-        qtde_aulas = int(request.form['qtde_aulas'])
+    form = MatriculaForm()
+    # Populamos os campos de seleção de alunos e modalidades
+    form.cod_aluno.choices = [(a['cod_aluno'], a['nome']) for a in lib.get_todos_alunos_detalhado()]
+    form.cod_modalidade.choices = [(m['cod_modalidade'], m['descricao']) for m in lib.get_todas_modalidades_detalhado()]
 
-        sucesso, msg = lib.incluir_matricula(cod, cod_aluno, cod_modalidade, qtde_aulas)
+    if form.validate_on_submit():
+        sucesso, msg = lib.incluir_matricula(
+            form.cod_matricula.data, form.cod_aluno.data,
+            form.cod_modalidade.data, form.qtde_aulas.data
+        )
         flash(msg, 'success' if sucesso else 'danger')
         return redirect(url_for('matriculas'))
 
     lista_matriculas = lib.get_todas_matriculas_detalhado()
-    lista_alunos = lib.get_todos_alunos_detalhado()
-    lista_modalidades = lib.get_todas_modalidades_detalhado()
-    return render_template('matriculas.html', matriculas=lista_matriculas, alunos=lista_alunos, modalidades=lista_modalidades)
+    return render_template('matriculas.html', matriculas=lista_matriculas, form=form)
 
 @app.route('/matriculas/excluir/<int:cod>')
 def excluir_matricula(cod):
@@ -152,6 +146,6 @@ def relatorio_matriculas_geral():
                            total_matriculas=dados_relatorio['total_matriculas'],
                            valor_total_geral=dados_relatorio['valor_total_geral'])
 
-# --- Roda o Servidor ---
 if __name__ == '__main__':
     app.run(debug=True)
+
