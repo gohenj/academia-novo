@@ -1,12 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import gestao_academia_lib as lib
-# Importamos TODAS as nossas classes de formulário do arquivo forms.py
 from forms import CidadeForm, AlunoForm, ProfessorForm, ModalidadeForm, MatriculaForm
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'sua-chave-secreta-aqui-12345'
 
-# Carrega os dados na memória ao iniciar
 lib.carregar_dados()
 
 @app.route('/')
@@ -17,16 +15,12 @@ def index():
 @app.route('/cidades', methods=['GET', 'POST'])
 def cidades():
     form = CidadeForm()
-    # Este 'if' só será verdadeiro se o formulário for enviado (POST) E passar em todas as regras
     if form.validate_on_submit():
-        # Pegamos os dados validados e limpos do formulário
         sucesso, msg = lib.incluir_cidade(form.cod.data, form.desc.data, form.uf.data)
         flash(msg, 'success' if sucesso else 'danger')
         return redirect(url_for('cidades'))
     
-    # Se for GET ou se a validação falhar, a página é renderizada normalmente
     lista_cidades = lib.get_todas_cidades()
-    # Passamos o objeto 'form' para o template para que ele possa ser desenhado
     return render_template('cidades.html', cidades=lista_cidades, form=form)
 
 @app.route('/cidades/excluir/<int:cod>')
@@ -39,7 +33,6 @@ def excluir_cidade(cod):
 @app.route('/alunos', methods=['GET', 'POST'])
 def alunos():
     form = AlunoForm()
-    # Populamos as opções do campo <select> de cidades dinamicamente
     form.cod_cidade.choices = [(c[0], f"{c[1]} - {c[2]}") for c in lib.get_todas_cidades()]
     
     if form.validate_on_submit():
@@ -63,7 +56,6 @@ def excluir_aluno(cod):
 @app.route('/professores', methods=['GET', 'POST'])
 def professores():
     form = ProfessorForm()
-    # Populamos as opções do campo <select> de cidades
     form.cod_cidade.choices = [(c[0], f"{c[1]} - {c[2]}") for c in lib.get_todas_cidades()]
 
     if form.validate_on_submit():
@@ -87,7 +79,6 @@ def excluir_professor(cod):
 @app.route('/modalidades', methods=['GET', 'POST'])
 def modalidades():
     form = ModalidadeForm()
-    # Populamos as opções do campo <select> de professores
     form.cod_professor.choices = [(p['cod_professor'], p['nome']) for p in lib.get_todos_professores_detalhado()]
 
     if form.validate_on_submit():
@@ -111,7 +102,6 @@ def excluir_modalidade(cod):
 @app.route('/matriculas', methods=['GET', 'POST'])
 def matriculas():
     form = MatriculaForm()
-    # Populamos os campos de seleção de alunos e modalidades
     form.cod_aluno.choices = [(a['cod_aluno'], a['nome']) for a in lib.get_todos_alunos_detalhado()]
     form.cod_modalidade.choices = [(m['cod_modalidade'], m['descricao']) for m in lib.get_todas_modalidades_detalhado()]
 

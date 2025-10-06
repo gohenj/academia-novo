@@ -1,6 +1,3 @@
-# gestao_academia_lib.py
-# Versão refatorada para ser usada como biblioteca pelo Flask
-
 import os
 from arvore_binaria import ArvoreBinariaBusca
 
@@ -30,7 +27,6 @@ arquivos = {
 # --- FUNÇÕES DE PERSISTÊNCIA ---
 
 def carregar_dados():
-    """Carrega os dados dos arquivos para a memória e constrói os índices."""
     print("Carregando dados e construindo índices...")
     for tabela, nome_arquivo in arquivos.items():
         if os.path.exists(nome_arquivo):
@@ -45,7 +41,6 @@ def carregar_dados():
     print("Dados carregados!")
 
 def salvar_dados(tabela):
-    """Salva os dados de uma tabela da memória para o arquivo."""
     nome_arquivo = arquivos[tabela]
     with open(nome_arquivo, 'w', encoding='utf-8') as f:
         chaves_ordenadas = sorted(dados[tabela].keys())
@@ -90,7 +85,6 @@ def excluir_cidade(cod):
     if not indices["cidades"].buscar(cod):
         return False, "Cidade não encontrada."
     
-    # Validação de chave estrangeira
     if any(int(aluno[2]) == cod for aluno in dados['alunos'].values()) or \
        any(int(prof[4]) == cod for prof in dados['professores'].values()):
         return False, "Não é possível excluir, cidade em uso por alunos ou professores."
@@ -154,7 +148,7 @@ def excluir_aluno(cod):
     return True, "Aluno excluído com sucesso."
 
 
-# --- FUNÇÕES DE PROFESSORES --- (Simplificado, adicione o resto)
+# --- FUNÇÕES DE PROFESSORES --- 
 
 def get_todos_professores_detalhado():
     lista = []

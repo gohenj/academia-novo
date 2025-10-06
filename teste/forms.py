@@ -2,11 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, IntegerField, SelectField, FloatField
 from wtforms.validators import DataRequired, Length, Regexp, NumberRange
 
-# Neste arquivo, definimos as REGRAS para cada campo de cada formulário.
-# Isso centraliza a validação e deixa o app.py muito mais limpo.
-
 class CidadeForm(FlaskForm):
-    """Formulário para validar dados de Cidades."""
     cod = IntegerField('Código', validators=[
         DataRequired(message="O código é obrigatório."),
         NumberRange(min=1, message="O código deve ser um número positivo.")
@@ -24,7 +20,6 @@ class CidadeForm(FlaskForm):
     submit = SubmitField('Salvar Cidade')
 
 class AlunoForm(FlaskForm):
-    """Formulário para validar dados de Alunos."""
     cod_aluno = IntegerField('Código do Aluno', validators=[
         DataRequired(message="O código é obrigatório."),
         NumberRange(min=1, message="O código deve ser um número positivo.")
@@ -52,7 +47,6 @@ class AlunoForm(FlaskForm):
     submit = SubmitField('Salvar Aluno')
 
 class ProfessorForm(FlaskForm):
-    """Formulário para validar dados de Professores."""
     cod_professor = IntegerField('Código do Professor', validators=[
         DataRequired(message="O código é obrigatório."),
         NumberRange(min=1, message="O código deve ser um número positivo.")
@@ -75,7 +69,6 @@ class ProfessorForm(FlaskForm):
     submit = SubmitField('Salvar Professor')
 
 class ModalidadeForm(FlaskForm):
-    """Formulário para validar dados de Modalidades."""
     cod_modalidade = IntegerField('Código da Modalidade', validators=[
         DataRequired(message="O código é obrigatório."),
         NumberRange(min=1, message="O código deve ser um número positivo.")
@@ -99,7 +92,6 @@ class ModalidadeForm(FlaskForm):
     submit = SubmitField('Salvar Modalidade')
 
 class MatriculaForm(FlaskForm):
-    """Formulário para validar dados de Matrículas."""
     cod_matricula = IntegerField('Código da Matrícula', validators=[
         DataRequired(message="O código é obrigatório."),
         NumberRange(min=1, message="O código deve ser um número positivo.")

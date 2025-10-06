@@ -1,5 +1,3 @@
-<<<<<<< HEAD
 6;assis;sp
-=======
-
+30;Londrina;PR
 60;manaus;am
