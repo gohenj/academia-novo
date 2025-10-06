@@ -1,4 +1,2 @@
 1;ALEXANDRE ZAGO;Rua Eliza Mercedes de Carvalho, 1469;18996596922;1
-2;jair;rua ali;1899587426256246292126;60
-6;Ubaldina;rua ali;191616171;6
-40;Ramelao;rua la;18996653697;30
+2;Begosso;Rua ali;18996653697;30
